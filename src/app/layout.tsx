@@ -4,6 +4,8 @@ import "./globals.css";
 import StyledComponentsRegistry from "@/app/registry";
 import Header from "@/layout/header";
 import Footer from "@/layout/footer";
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import darkTheme from "@/globalTheme/darkTheme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,12 +29,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+    { }
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <StyledComponentsRegistry>
-          <Header />
-          {children}
-          <Footer />
-        </StyledComponentsRegistry>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <StyledComponentsRegistry>
+            <Header />
+              {children}
+            <Footer />
+          </StyledComponentsRegistry>
+        </ThemeProvider>
       </body>
     </html>
   );

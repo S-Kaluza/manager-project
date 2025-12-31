@@ -1,4 +1,4 @@
-import {CubeMesh, Face} from "@/app/profile/login/StyledComponents";
+import {CubeMesh, Face} from "@/app/profile/StyledComponents";
 
 export const getHSLA = (colorName, hueAdjustment = 0) => {
     switch (colorName) {

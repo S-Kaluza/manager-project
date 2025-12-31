@@ -1,6 +1,5 @@
 'use client'
 
-import React, { useState } from 'react';
 import {
     AppBar,
     Typography,
@@ -11,12 +10,13 @@ import {
     TextField,
 } from '@mui/material';
 
-import { styled } from '@mui/material/styles';
+// Importujemy alpha do obsługi przezroczystości (np. rgba) bazując na kolorze z theme
+import { styled, alpha } from '@mui/material/styles';
 
 // Główny kontener paska nawigacji z gradientem
 export const StyledAppBar = styled(AppBar)(({ theme }) => ({
-    // Gradient od granatowego do prawie czarnego
-    background: 'linear-gradient(135deg, #0A192F 0%, #020C1B 100%)',
+    // Pobieramy kolory tła zdefiniowane w theme (navy i darkNavy)
+    background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
     boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
     transition: 'all 0.3s ease',
     position: 'sticky',
@@ -28,7 +28,8 @@ export const StyledAppBar = styled(AppBar)(({ theme }) => ({
 export const LogoText = styled(Typography)(({ theme }) => ({
     fontWeight: 700,
     letterSpacing: '1px',
-    background: 'linear-gradient(45deg, #64ffda, #ffffff)', // Akcent kolorystyczny (turkus/biel)
+    // Gradient: Primary Color -> Text Primary (biały/jasny)
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.text.primary})`,
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     marginRight: theme.spacing(4),
@@ -42,8 +43,11 @@ export const LogoText = styled(Typography)(({ theme }) => ({
 }));
 
 // Nowoczesne przyciski nawigacyjne
-export const NavButton = styled(Button)(({ theme, active }) => ({
-    color: active ? '#64ffda' : '#8892b0', // Aktywny vs nieaktywny kolor tekstu
+// shouldForwardProp zapobiega przekazywaniu niestandardowego propa 'active' do elementu DOM
+export const NavButton = styled(Button, {
+    shouldForwardProp: (prop) => prop !== 'active',
+})(({ theme, active }) => ({
+    color: active ? theme.palette.primary.main : theme.palette.text.secondary,
     fontWeight: 500,
     textTransform: 'capitalize',
     fontSize: '1rem',
@@ -56,12 +60,12 @@ export const NavButton = styled(Button)(({ theme, active }) => ({
         height: '2px',
         bottom: 0,
         left: 0,
-        backgroundColor: '#64ffda',
+        backgroundColor: theme.palette.primary.main,
         transition: 'width 0.3s ease',
     },
     '&:hover': {
-        backgroundColor: 'rgba(100, 255, 218, 0.05)',
-        color: '#ccd6f6',
+        backgroundColor: alpha(theme.palette.primary.main, 0.05),
+        color: theme.palette.text.primary, // hover color
         '&::after': {
             width: '100%',
         },
@@ -78,87 +82,80 @@ export const UserSection = styled(Box)(({ theme }) => ({
 
 // Tekst nazwy użytkownika
 export const UserName = styled(Typography)(({ theme }) => ({
-    color: '#e6f1ff',
+    color: theme.palette.text.primary,
     fontWeight: 500,
     display: 'block',
     marginRight: theme.spacing(1),
     [theme.breakpoints.down('sm')]: {
-        display: 'none', // Ukryj imię na bardzo małych ekranach
+        display: 'none',
     },
 }));
 
 // Przycisk logowania/rejestracji
+// W idealnym świecie ten styl jest zbędny, jeśli Global Theme ustawił domyślne style Buttona,
+// ale tutaj dostosowujemy go ręcznie używając zmiennych.
 export const AuthButton = styled(Button)(({ theme, variant }) => ({
     textTransform: 'none',
     borderRadius: '8px',
     padding: '6px 20px',
     fontWeight: 600,
     ...(variant === 'outlined' ? {
-        border: '1px solid #64ffda',
-        color: '#64ffda',
+        border: `1px solid ${theme.palette.primary.main}`,
+        color: theme.palette.primary.main,
         '&:hover': {
-            backgroundColor: 'rgba(100, 255, 218, 0.1)',
-            border: '1px solid #64ffda',
+            backgroundColor: alpha(theme.palette.primary.main, 0.1),
+            border: `1px solid ${theme.palette.primary.main}`,
         },
     } : {
-        backgroundColor: '#64ffda',
-        color: '#0A192F',
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.background.default, // Kontrastowy tekst (navy)
         '&:hover': {
-            backgroundColor: '#4cd6b3',
+            // Lekkie przyciemnienie koloru głównego
+            backgroundColor: alpha(theme.palette.primary.main, 0.8),
         },
     }),
 }));
 
-export const LogoWrapper = styled(Button)`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 10px;
-    gap: 0;
-
-    /* RESET STYLÓW PRZYCISKU */
-    background: transparent; /* Usuwa szare tło */
-    border: none;            /* Usuwa ramkę */
-    padding: 0;              /* Usuwa domyślny padding */
-    cursor: pointer;         /* Kursor łapki */
-
-    /* Opcjonalnie: usuń styl outline przy kliknięciu, jeśli przeszkadza, 
-       ale pamiętaj o dostępności (accessibility) */
-    /* outline: none; */
-
-    /* Rozwiązanie: Usuń marginesy ze wszystkich bezpośrednich dzieci */
-    & > * {
-        margin: 0;
+export const LogoWrapper = styled(Button)(({ }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '10px',
+    gap: 0,
+    background: 'transparent',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer',
+    '& > *': {
+        margin: 0,
+    },
+    '&:hover': {
+        opacity: 0.8,
     }
+}));
 
-    /* Efekt hover (opcjonalny, np. zmiana jasności) */
-    &:hover {
-        opacity: 0.8;
-    }
-`;
-
-export const AppTitleParagraph = styled('p')`
-    margin-bottom: auto;
-    color: white;
-`
+export const AppTitleParagraph = styled('p')(({ theme }) => ({
+    marginBottom: 'auto',
+    color: theme.palette.text.primary, // Zamiast 'white'
+}));
 
 // Główny kontener stopki
 export const FooterWrapper = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#020C1B', // Najciemniejszy kolor z gradientu Headera
-    color: '#8892b0',           // Ten sam kolor co nieaktywne przyciski w Headerze
+    backgroundColor: theme.palette.background.paper, // Najciemniejszy kolor tła
+    color: theme.palette.text.secondary,
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(4),
-    borderTop: '1px solid rgba(100, 255, 218, 0.1)', // Subtelna linia oddzielająca w kolorze akcentu
+    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
     fontSize: '0.9rem',
 }));
 
 // Nagłówki kolumn w stopce
 export const FooterTitle = styled(Typography)(({ theme }) => ({
-    color: '#e6f1ff', // Jasny kolor tekstu (jak UserName w Headerze)
+    color: theme.palette.text.primary,
     fontWeight: 700,
     marginBottom: theme.spacing(2),
     letterSpacing: '0.5px',
@@ -167,7 +164,7 @@ export const FooterTitle = styled(Typography)(({ theme }) => ({
 
 // Linki w stopce
 export const StyledFooterLink = styled(Link)(({ theme }) => ({
-    color: '#8892b0',
+    color: theme.palette.text.secondary,
     textDecoration: 'none',
     display: 'block',
     marginBottom: theme.spacing(1),
@@ -175,36 +172,37 @@ export const StyledFooterLink = styled(Link)(({ theme }) => ({
     fontSize: '0.95rem',
     cursor: 'pointer',
     '&:hover': {
-        color: '#64ffda', // Akcent turkusowy przy najeździe
-        paddingLeft: theme.spacing(0.5), // Lekkie przesunięcie w prawo przy hover
+        color: theme.palette.primary.main,
+        paddingLeft: theme.spacing(0.5),
     },
 }));
 
 // Ikony społecznościowe
 export const SocialIcon = styled(IconButton)(({ theme }) => ({
-    color: '#8892b0',
+    color: theme.palette.text.secondary,
     transition: 'all 0.3s ease',
     '&:hover': {
-        color: '#64ffda',
+        color: theme.palette.primary.main,
         transform: 'translateY(-3px)',
-        backgroundColor: 'rgba(100, 255, 218, 0.1)',
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
     },
 }));
 
-// Input do newslettera (dopasowany do dark mode)
+// Input do newslettera
 export const NewsletterInput = styled(TextField)(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
-        backgroundColor: 'rgba(10, 25, 47, 0.5)',
-        color: '#e6f1ff',
+        // Używamy alpha dla tła inputa
+        backgroundColor: alpha(theme.palette.background.default, 0.5),
+        color: theme.palette.text.primary,
         borderRadius: '4px 0 0 4px',
         '& fieldset': {
-            borderColor: '#233554',
+            borderColor: '#233554', // Można to dodać do theme jako custom, tu zostawiam lub zmieniam na divider
         },
         '&:hover fieldset': {
-            borderColor: '#64ffda',
+            borderColor: theme.palette.primary.main,
         },
         '&.Mui-focused fieldset': {
-            borderColor: '#64ffda',
+            borderColor: theme.palette.primary.main,
         },
     },
     '& input': {
@@ -215,18 +213,18 @@ export const NewsletterInput = styled(TextField)(({ theme }) => ({
 // Przycisk "Zapisz się"
 export const SubscribeButton = styled(Button)(({ theme }) => ({
     backgroundColor: 'transparent',
-    color: '#64ffda',
-    border: '1px solid #64ffda',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '0 4px 4px 0',
     textTransform: 'none',
     padding: '9px 20px',
     '&:hover': {
-        backgroundColor: 'rgba(100, 255, 218, 0.1)',
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
     },
 }));
 
 export const CopyrightText = styled(Typography)(({ theme }) => ({
     fontSize: '0.85rem',
-    color: '#556080', // Ciemniejszy odcień dla mniej ważnych informacji
+    color: alpha(theme.palette.text.secondary, 0.7), // Jeszcze ciemniejszy odcień secondary
     marginTop: theme.spacing(2),
 }));

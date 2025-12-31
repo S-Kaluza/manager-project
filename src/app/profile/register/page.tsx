@@ -13,12 +13,12 @@ import GoogleIcon from '@mui/icons-material/Google';
 import LiquidGlassCard from "@/components/glass/glassBox/liquidGlasscard";
 import NetworkAnimation from "@/components/animations/networkAnimation/networkAnimation";
 
-function LoginPage() {
+function RegisterPage() {
 
     return (
         <>
             <LoginPageContainer>
-                <NetworkAnimation activeColor={'default'}/>
+                <NetworkAnimation activeColor={'green'}/>
 
                 <LiquidGlassCard glow maxWidth={'50%'} marginBottom={'15vh'} marginTop={'15vh'} marginLeft={'auto'} marginRight={'50px'}>
                     <Typography
@@ -29,13 +29,27 @@ function LoginPage() {
                             color: 'text.primary'
                         }}
                     >
-                        Witamy ponownie
+                        Nie masz konta? Zarejestruj się!
                     </Typography>
 
                     <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <TextField
                             fullWidth
                             placeholder="Adres e-mail"
+                            variant="outlined"
+                            size="small"
+                        />
+
+                        <TextField
+                            fullWidth
+                            placeholder="Imię"
+                            variant="outlined"
+                            size="small"
+                        />
+
+                        <TextField
+                            fullWidth
+                            placeholder="Nazwisko"
                             variant="outlined"
                             size="small"
                         />
@@ -47,9 +61,17 @@ function LoginPage() {
                             size="small"
                         />
 
+                        <TextField
+                            fullWidth
+                            placeholder="Powtórz hasło"
+                            type="password"
+                            variant="outlined"
+                            size="small"
+                        />
+
                         <Box sx={{ mt: 2, width: '60%', margin: 'auto' }}>
                             <Button fullWidth variant="contained" color="primary" size="large">
-                                Zaloguj się
+                                Zarejestruj się
                             </Button>
                         </Box>
                         <Box sx={{ mt: 2, width: '60%', margin: 'auto' }}>
@@ -66,15 +88,15 @@ function LoginPage() {
                                 color: 'text.secondary'
                             }}
                         >
-                            Nie masz konta?{' '}
+                            Masz konto?{' '}
                             <Link
                                 underline="none"
                                 sx={{
                                     fontWeight: 600,
                                 }}
-                                href={'/profile/register'}
+                                href={`/profile/login`}
                             >
-                                Zarejestruj się
+                                Zaloguj się
                             </Link>
                         </Typography>
                     </Box>
@@ -84,4 +106,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default RegisterPage;
