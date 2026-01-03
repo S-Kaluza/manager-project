@@ -5,11 +5,3 @@ export const LoginPageContainer = styled.div`
     flex-direction: row;
     align-items: center;
 `
-
-export const AnimationContainer = styled.div`
-    width: 50%;
-`
-
-export const LoginForm = styled.form`
-    
-`

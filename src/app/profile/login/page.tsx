@@ -12,9 +12,27 @@ import GoogleIcon from '@mui/icons-material/Google';
 
 import LiquidGlassCard from "@/components/glass/glassBox/liquidGlasscard";
 import NetworkAnimation from "@/components/animations/networkAnimation/networkAnimation";
+import {useFormik} from "formik";
+import {ILoginCredentials} from "@/interfaces/IUser";
+import {useAuth} from "@/providers/AuthProvider/AuthProvider";
+import {useRouter} from "next/navigation";
 
 function LoginPage() {
+    const router = useRouter()
+    const {login} = useAuth()
 
+    const handleSubmit = (values: ILoginCredentials) => {
+        login.mutate(values)
+        router.push('/dashboard')
+    }
+
+    const formik = useFormik<ILoginCredentials>({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        onSubmit: handleSubmit,
+    });
     return (
         <>
             <LoginPageContainer>
@@ -32,26 +50,32 @@ function LoginPage() {
                         Witamy ponownie
                     </Typography>
 
-                    <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <TextField
-                            fullWidth
-                            placeholder="Adres e-mail"
-                            variant="outlined"
-                            size="small"
-                        />
-                        <TextField
-                            fullWidth
-                            placeholder="Hasło"
-                            type="password"
-                            variant="outlined"
-                            size="small"
-                        />
+                    <Box component="form" onSubmit={formik.handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <TextField
+                                fullWidth
+                                placeholder="Adres e-mail"
+                                variant="outlined"
+                                size="small"
+                                name="email"
+                                onChange={formik.handleChange}
+                                value={formik.values.email}
+                            />
+                            <TextField
+                                fullWidth
+                                placeholder="Hasło"
+                                type="password"
+                                variant="outlined"
+                                size="small"
+                                name='password'
+                                onChange={formik.handleChange}
+                                value={formik.values.password}
+                            />
 
-                        <Box sx={{ mt: 2, width: '60%', margin: 'auto' }}>
-                            <Button fullWidth variant="contained" color="primary" size="large">
-                                Zaloguj się
-                            </Button>
-                        </Box>
+                            <Box sx={{ mt: 2, width: '60%', margin: 'auto' }}>
+                                <Button fullWidth variant="contained" color="primary" size="large" type={'submit'}>
+                                    Zaloguj się
+                                </Button>
+                            </Box>
                         <Box sx={{ mt: 2, width: '60%', margin: 'auto' }}>
                             <Button fullWidth variant="contained" color="primary" size="large">
                                 <GoogleIcon sx={{marginRight: '10px'}} /> Continue with google

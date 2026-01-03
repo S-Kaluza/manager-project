@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   compiler: {
     styledComponents: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*', // Kiedy frontend pyta o /api/...
+        destination: 'http://localhost:5180/api/:path*', // Przekieruj na backend
+      },
+    ];
+  },
 };
 
 export default nextConfig;

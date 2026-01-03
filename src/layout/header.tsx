@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 
+import {useRouter} from 'next/navigation'
+
 
 import {
     Toolbar,
@@ -28,7 +30,6 @@ import {
 import {
     AppTitleParagraph,
     AuthButton,
-    LogoText,
     LogoWrapper,
     NavButton,
     StyledAppBar,
@@ -37,22 +38,18 @@ import {
 } from "@/layout/styledComponents";
 import {useState} from "react";
 import styles from "@/app/page.module.css";
+import {useAuth} from "@/providers/AuthProvider/AuthProvider";
 
 const Header = () => {
-    // Stan logowania (zgodnie z prośbą - domyślnie true)
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
-
-    // Stan menu rozwijanego (dropdown)
+    const [isLoggedIn] = useState(true);
+    const {isAuthenticated, logout} = useAuth();
+    const router = useRouter();
     const [anchorEl, setAnchorEl] = useState(null);
-
-    // Stan aktywnej zakładki (do celów wizualnych)
     const [activeTab, setActiveTab] = useState('summary');
 
-    // Hooki MUI do responsywności
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    // Obsługa menu profilu
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -62,12 +59,9 @@ const Header = () => {
     };
 
     const handleLogout = () => {
+        logout();
         handleMenuClose();
-        setIsLoggedIn(false);
-    };
-
-    const handleLogin = () => {
-        setIsLoggedIn(true);
+        router.refresh();
     };
 
     return (
@@ -86,7 +80,7 @@ const Header = () => {
                     </LogoWrapper>
 
                     {/* 2. NAVIGATION (Ukryte na mobile, widoczne na desktop) */}
-                    {!isMobile && isLoggedIn && (
+                    {!isMobile && isAuthenticated && (
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <NavButton
                                 startIcon={<PeopleAlt fontSize="small" />}
@@ -107,7 +101,7 @@ const Header = () => {
 
                     {/* 3. USER / AUTH SECTION */}
                     <UserSection>
-                        {isLoggedIn ? (
+                        {isAuthenticated ? (
                             <>
                                 {/* Ikona powiadomień (opcjonalny dodatek dla nowoczesnego looku) */}
                                 <IconButton sx={{ color: '#8892b0' }}>
@@ -189,10 +183,10 @@ const Header = () => {
                         ) : (
                             // Widok dla niezalogowanego użytkownika
                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                <AuthButton variant="text" sx={{ color: '#ccd6f6' }} onClick={handleLogin}>
+                                <AuthButton variant="text" sx={{ color: '#ccd6f6' }} onClick={() => router.push('/profile/login')}>
                                     Login
                                 </AuthButton>
-                                <AuthButton variant="outlined" onClick={handleLogin}>
+                                <AuthButton variant="outlined" onClick={() => router.push('/profile/register')}>
                                     Register
                                 </AuthButton>
                             </Box>
