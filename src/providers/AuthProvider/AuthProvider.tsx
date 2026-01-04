@@ -4,6 +4,7 @@ import {createContext, useContext} from "react";
 import {useQuery, useMutation, useQueryClient, UseMutationResult} from '@tanstack/react-query'
 import { getUser, loginUser, registerUser } from './api';
 import IUser, {IAuthenticateResults, ILoginCredentials, IRegisterCredentials} from "@/interfaces/IUser";
+import {useRouter} from "next/navigation";
 
 interface IAuthProviderValue {
     user: IUser | null, // Zmieniłem na IUser | null, bo na początku usera nie ma
@@ -20,17 +21,19 @@ const AuthContext = createContext<IAuthProviderValue>({} as IAuthProviderValue);
 
 const AuthProvider = ({children}) => {
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     const {data: user, isLoading, isError } = useQuery({
         queryKey: ['user'],
         queryFn: getUser,
         retry: false,
-        staleTime: 1000 * 5 * 60
+        staleTime: 1000 * 5 * 60,
     })
 
     const loginMutation = useMutation({
         mutationFn: loginUser,
         onSuccess: async (data: IAuthenticateResults) => {
+            router.push('/dashboard');
             if (data?.token) {
                 localStorage.setItem('token', data.token);
                 if (data.expires) {

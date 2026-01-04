@@ -15,15 +15,12 @@ import NetworkAnimation from "@/components/animations/networkAnimation/networkAn
 import {useFormik} from "formik";
 import {ILoginCredentials} from "@/interfaces/IUser";
 import {useAuth} from "@/providers/AuthProvider/AuthProvider";
-import {useRouter} from "next/navigation";
 
 function LoginPage() {
-    const router = useRouter()
     const {login} = useAuth()
 
     const handleSubmit = (values: ILoginCredentials) => {
         login.mutate(values)
-        router.push('/dashboard')
     }
 
     const formik = useFormik<ILoginCredentials>({
