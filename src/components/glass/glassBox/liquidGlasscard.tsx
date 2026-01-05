@@ -9,6 +9,8 @@ interface LiquidGlassCardProps {
     marginBottom?: string | number;
     marginLeft?: string | number;
     marginRight?: string | number;
+    maxHeight?: string | number;
+    overflowY?: string;
 }
 
 const LiquidGlassCard: React.FC<LiquidGlassCardProps> = ({
@@ -20,6 +22,8 @@ const LiquidGlassCard: React.FC<LiquidGlassCardProps> = ({
                                                              marginBottom,
                                                              marginLeft,
                                                              marginRight,
+                                                             maxHeight,
+                                                             overflowY,
 
                                                          }) => {
     return (
@@ -33,6 +37,8 @@ const LiquidGlassCard: React.FC<LiquidGlassCardProps> = ({
                 marginBottom: marginBottom,
                 marginLeft: marginLeft,
                 marginRight: marginRight,
+                overflowY: overflowY,
+                maxHeight: maxHeight,
             }}
 
         >

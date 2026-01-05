@@ -13,7 +13,8 @@ export const getUser = async () => {
         }
     });
     if (!res.ok) throw new Error('Not authenticated');
-    return res.json();
+    const response = await res.json();
+    return response;
 };
 
 export const loginUser = async (credentials: ILoginCredentials) => {
