@@ -2,6 +2,7 @@ interface IUser {
     email: string;
     name: string;
     surname: string;
+    companyId: string;
 }
 
 export interface IRegisterCredentials {
